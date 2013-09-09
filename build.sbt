@@ -4,9 +4,9 @@ import sbtrelease.ReleasePlugin._
 name := "scala-storm"
 
 // If you comment this out, SBT 0.10 will default to Scala 2.8.1
-scalaVersion := "2.9.1"
+scalaVersion := "2.10.2"
 
-organization := "com.github.velvia"
+organization := "org.clojars.brenden"
 
 // sbt defaults to <project>/src/test/{scala,java} unless we put this in
 unmanagedSourceDirectories in Test <<= Seq( baseDirectory( _ / "test" ) ).join
@@ -16,7 +16,7 @@ unmanagedSourceDirectories in Compile <<= Seq( baseDirectory( _ / "src" ) ).join
 resolvers ++= Seq("clojars" at "http://clojars.org/repo/",
                   "clojure-releases" at "http://build.clojure.org/releases")
 
-libraryDependencies += "storm" % "storm" % "0.8.1" % "provided" exclude("junit", "junit") 
+libraryDependencies += "storm" % "storm" % "0.9.0-wip21" % "provided" exclude("junit", "junit")
 
 // This is to prevent error [java.lang.OutOfMemoryError: PermGen space]
 javaOptions += "-XX:MaxPermSize=1g"
@@ -38,11 +38,7 @@ logLevel := Level.Info
 publishMavenStyle := true
 
 publishTo <<= version { (v: String) =>
-  val nexus = "https://oss.sonatype.org/"
-  if (v.trim.endsWith("SNAPSHOT"))
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-  else
-    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+  Some("clojars" at "https://clojars.org/repo")
 }
 
 publishArtifact in Test := false
@@ -68,6 +64,14 @@ pomExtra := (
       <name>Evan Chan</name>
       <url>http://github.com/velvia</url>
     </developer>
-  </developers>)
+  </developers>
+  <distributionManagement>
+    <repository>
+      <id>clojars</id>
+      <name>Clojars repository</name>
+      <url>https://clojars.org/repo</url>
+    </repository>
+  </distributionManagement>
+  )
 
 seq(releaseSettings: _*)
